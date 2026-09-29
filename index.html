@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parapentes</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <!-- Main Content -->
+      <section class="container">
+        <nav class="navbar">
+          <div class="navbar_content">
+            <img src="paraglidingLogo.png" alt="logo" />
+            <ul>
+              <li><a href="/">Parapentes</a></li>
+              <li><a href="/">Arneses</a></li>
+              <li><a href="/">Paracaídas</a></li>
+              <li><a href="/">Paramotor</a></li>
+            </ul>
+          </div>
+        </nav>
+
+        <section class="main-content">
+          <p>Diseña tu</p>
+          <h1>propia vela!</h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam
+            accusantium deleniti similique quis reiciendis laboriosam hic, vel
+            iusto doloribus, numquam eligendi amet ut modi, reprehenderit nobis
+            sapiente commodi tempore laudantium.
+          </p>
+        </section>
+
+        <section class="side-content">
+          <p>ARTIK R 2</p>
+          <img src="niviukArtikR2.png" alt="Niviuk ARTIK R 2" />
+          <div></div>
+        </section>
+
+        <!-- Footer / Cards -->
+        <section class="footer">
+          <div id="button1">
+            <img src="niviukHook7.png" alt="Niviuk Hook 7" />
+          </div>
+          <div id="button2">
+            <img src="niviukIkuma3.png" alt="Niviuk Ikuma 3" />
+          </div>
+          <div id="button3">
+            <img src="niviukIcepeak X-One.png" alt="Niviuk Icepeak X-One" />
+          </div>
+        </section>
+      </section>
+
+      <!-- Loader -->
+      <section class="loader">
+        <div></div>
+        <div></div>
+        <div></div>
+      </section>
+
+      <!-- Modal & Carrusel 3D -->
+      <section class="modal hidden">
+        <div class="modal-content">
+          <span class="close-btn" id="close-btn">&times;</span>
+          
+          <div class="slider">
+            <input type="radio" name="slider" id="radio1" checked />
+            <input type="radio" name="slider" id="radio2" />
+            <input type="radio" name="slider" id="radio3" />
+
+            <div class="cards">
+              <label for="radio1" class="card card1">
+                <img src="niviukHook7.png" alt="Niviuk Hook 7" />
+                <p>Niviuk Hook 7</p>
+              </label>
+              <label for="radio2" class="card card2">
+                <img src="niviukIkuma3.png" alt="Niviuk Ikuma 3" />
+                <p>Niviuk Ikuma 3</p>
+              </label>
+              <label for="radio3" class="card card3">
+                <img src="niviukIcepeak X-One.png" alt="Niviuk Icepeak X-One" />
+                <p>Niviuk Icepeak X-One</p>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- JavaScript - Interacción DOM, LocalStorage y Swap de Velas -->
+    <script>
+      const button1 = document.querySelector("#button1");
+      const button2 = document.querySelector("#button2");
+      const button3 = document.querySelector("#button3");
+      const modal = document.querySelector(".modal");
+      const closeBtn = document.querySelector("#close-btn");
+
+      const radio1 = document.querySelector("#radio1");
+      const radio2 = document.querySelector("#radio2");
+      const radio3 = document.querySelector("#radio3");
+
+      const mainGliderImg = document.querySelector(".side-content img");
+      const mainGliderName = document.querySelector(".side-content p");
+      
+      const footerBtns = [
+        document.querySelector("#button1 img"),
+        document.querySelector("#button2 img"),
+        document.querySelector("#button3 img")
+      ];
+
+      const cards = document.querySelectorAll(".card");
+
+      // deafult config para las velas
+      const defaultState = {
+        main: { src: "niviukArtikR2.png", name: "ARTIK R 2" },
+        options: [
+          { src: "niviukHook7.png", name: "Niviuk Hook 7" },
+          { src: "niviukIkuma3.png", name: "Niviuk Ikuma 3" },
+          { src: "niviukIcepeak X-One.png", name: "Niviuk Icepeak X-One" }
+        ]
+      };
+
+      let state = JSON.parse(localStorage.getItem("gliderState")) || defaultState;
+
+      function renderState() {
+
+        mainGliderImg.src = state.main.src;
+        mainGliderName.innerText = state.main.name;
+
+        cards.forEach((card, index) => {
+          footerBtns[index].src = state.options[index].src;
+          card.querySelector("img").src = state.options[index].src;
+          card.querySelector("p").innerText = state.options[index].name;
+        });
+      }
+
+      renderState();
+
+      button1.addEventListener("click", () => {
+        modal.classList.remove("hidden");
+        radio1.checked = true;
+      });
+
+      button2.addEventListener("click", () => {
+        modal.classList.remove("hidden");
+        radio2.checked = true;
+      });
+
+      button3.addEventListener("click", () => {
+        modal.classList.remove("hidden");
+        radio3.checked = true;
+      });
+
+      closeBtn.addEventListener("click", () => {
+        modal.classList.add("hidden");
+      });
+
+      cards.forEach((card, index) => {
+        card.addEventListener("click", function (e) {
+          const radioId = this.getAttribute("for");
+          const radio = document.getElementById(radioId);
+
+          if (radio.checked) {
+            e.preventDefault(); 
+
+            const temp = state.main;
+            state.main = state.options[index];
+            state.options[index] = temp;
+
+            localStorage.setItem("gliderState", JSON.stringify(state));
+
+            window.location.reload();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
